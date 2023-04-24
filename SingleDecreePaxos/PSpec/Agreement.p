@@ -13,13 +13,11 @@ spec Agreement observes eCommit {
 }
 
 spec Termination observes eCommit {
-  // NOTE: no sum or option type.
-  var isCommitted: bool;
-  var committedVal: data;
   start hot state Init {
     on eCommit goto Done;
   }
 
   state Done {
+    on eCommit goto Done;
   }
 }

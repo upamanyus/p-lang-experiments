@@ -16,9 +16,10 @@ machine Proposer {
   // every proposer starts in its own unique epoch.
   start state Main {
     // determine an upper bound on what's been committed previously.
-    entry (inReplicas: set[Replica]) {
+    entry (input: (epoch: int, replicas: set[Replica])) {
       var replica: Replica;
-      replicas = inReplicas;
+      replicas = input.replicas;
+      epoch = input.epoch;
       foreach(replica in replicas) {
         send replica, eEnterNewEpoch, (source = this, epoch = epoch);
       }
@@ -27,7 +28,7 @@ machine Proposer {
     on eEnterNewEpochReply do (reply:tEnterNewEpochReply) {
       var replica: Replica;
       preparedReplicas += (reply.source);
-      if (reply.epoch > largestEpochSeen) {
+      if (reply.epoch >= largestEpochSeen) {
         largestEpochSeen = reply.epoch;
         val = reply.val;
       }

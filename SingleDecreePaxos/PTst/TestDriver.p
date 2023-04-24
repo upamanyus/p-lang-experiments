@@ -13,11 +13,16 @@ fun SetupSystem(vals: set[data], numProposers: int)
 {
   var replicas: set[Replica];
   var val: data;
+  var i: int;
 
   // create the replicas
   foreach (val in vals) {
     replicas += (new Replica(val));
   }
 
-  new Proposer(replicas);
+  i = 0;
+  while (i < numProposers) {
+    new Proposer((epoch = i+1, replicas=replicas));
+    i = i + 1;
+  }
 }

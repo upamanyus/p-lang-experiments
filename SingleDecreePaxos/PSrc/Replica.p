@@ -26,8 +26,9 @@ machine Replica {
       // NOTE: annoying that variables must be declared at the top
       var reply: tEnterNewEpochReply;
       if (req.epoch > epoch) {
-        epoch = req.epoch;
-        reply = (source = this, epoch = acceptedEpoch, newEpoch = acceptedEpoch, val = val);
+        // FIXME: reenable the following line
+        // epoch = req.epoch;
+        reply = (source = this, epoch = acceptedEpoch, newEpoch = epoch, val = val);
         send req.source, eEnterNewEpochReply, reply;
       }
     }
