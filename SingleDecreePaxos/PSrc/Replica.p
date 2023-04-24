@@ -28,8 +28,10 @@ machine Replica {
       if (req.epoch > epoch) {
         // FIXME: reenable the following line
         // epoch = req.epoch;
-        reply = (source = this, epoch = acceptedEpoch, newEpoch = epoch, val = val);
-        send req.source, eEnterNewEpochReply, reply;
+        reply = (source = this, epoch = acceptedEpoch, newEpoch = req.epoch, val = val);
+        // while (true) {
+          UnReliableSend(req.source, eEnterNewEpochReply, reply);
+        // }
       }
     }
 
@@ -43,7 +45,7 @@ machine Replica {
         // like with other named tuples?
         reply.source = this;
         reply.epoch = epoch;
-        send req.source, eProposeReply, reply;
+        UnReliableSend(req.source, eProposeReply, reply);
       }
     }
   }

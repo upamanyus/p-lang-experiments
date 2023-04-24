@@ -21,7 +21,7 @@ machine Proposer {
       replicas = input.replicas;
       epoch = input.epoch;
       foreach(replica in replicas) {
-        send replica, eEnterNewEpoch, (source = this, epoch = epoch);
+        UnReliableSend(replica, eEnterNewEpoch, (source = this, epoch = epoch));
       }
     }
 
@@ -36,7 +36,7 @@ machine Proposer {
       if (2 * sizeof(preparedReplicas) > sizeof(replicas)) {
         // send out propose
         foreach(replica in replicas) {
-          send replica, ePropose, (source = this, epoch = epoch, val = val);
+          UnReliableSend(replica, ePropose, (source = this, epoch = epoch, val = val));
         }
       }
     }
