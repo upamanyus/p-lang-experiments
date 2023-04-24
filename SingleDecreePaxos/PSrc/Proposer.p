@@ -33,7 +33,8 @@ machine Proposer {
         val = reply.val;
       }
 
-      if (2 * sizeof(preparedReplicas) > sizeof(replicas)) {
+      // FIXME: this is supposed to be a bug
+      if (sizeof(preparedReplicas) > 0) {
         // send out propose
         foreach(replica in replicas) {
           UnReliableSend(replica, ePropose, (source = this, epoch = epoch, val = val));
