@@ -8,6 +8,7 @@ spec Agreement observes eCommit {
         assert (committedVal == val), "inconsistent values committed";
       }
       committedVal = val;
+      isCommitted = true;
     }
   }
 }
