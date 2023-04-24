@@ -28,7 +28,7 @@ machine Proposer {
     on eEnterNewEpochReply do (reply:tEnterNewEpochReply) {
       var replica: Replica;
       preparedReplicas += (reply.source);
-      if (reply.epoch >= largestEpochSeen) {
+      if (reply.epoch > largestEpochSeen) {
         largestEpochSeen = reply.epoch;
         val = reply.val;
       }
