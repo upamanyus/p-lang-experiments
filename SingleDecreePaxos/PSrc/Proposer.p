@@ -16,8 +16,9 @@ machine Proposer {
   // every proposer starts in its own unique epoch.
   start state Main {
     // determine an upper bound on what's been committed previously.
-    entry {
+    entry (inReplicas: set[Replica]) {
       var replica: Replica;
+      replicas = inReplicas;
       foreach(replica in replicas) {
         send replica, eEnterNewEpoch, (source = this, epoch = epoch);
       }
@@ -42,7 +43,7 @@ machine Proposer {
     on eProposeReply do (reply:tProposeReply) {
       acceptedReplicas += (reply.source);
       if (2 * sizeof(acceptedReplicas) > sizeof(replicas)) {
-        send this, eCommit, val;
+        announce eCommit, val;
       }
     }
   }

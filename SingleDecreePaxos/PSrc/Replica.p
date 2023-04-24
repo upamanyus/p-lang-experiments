@@ -17,6 +17,11 @@ machine Replica {
   var val : data;
 
   start state Main {
+
+    entry (inVal: data) {
+      val = inVal;
+    }
+
     on eEnterNewEpoch do (req:tEnterNewEpochArgs) {
       // NOTE: annoying that variables must be declared at the top
       var reply: tEnterNewEpochReply;
