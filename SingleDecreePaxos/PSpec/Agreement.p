@@ -5,7 +5,9 @@ spec Agreement observes eCommit {
   start state Init {
     on eCommit do (val: data) {
       if (isCommitted) {
-        assert (committedVal == val), "inconsistent values committed";
+
+        assert (committedVal == val), "inconsistent values committed. " +
+        format("old {0} != new {1}", committedVal, val);
       }
       committedVal = val;
       isCommitted = true;

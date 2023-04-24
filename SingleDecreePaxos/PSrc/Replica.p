@@ -26,12 +26,9 @@ machine Replica {
       // NOTE: annoying that variables must be declared at the top
       var reply: tEnterNewEpochReply;
       if (req.epoch > epoch) {
-        // FIXME: reenable the following line
-        // epoch = req.epoch;
+        epoch = req.epoch;
         reply = (source = this, epoch = acceptedEpoch, newEpoch = req.epoch, val = val);
-        // while (true) {
-          UnReliableSend(req.source, eEnterNewEpochReply, reply);
-        // }
+        UnReliableSend(req.source, eEnterNewEpochReply, reply);
       }
     }
 
