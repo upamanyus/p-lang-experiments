@@ -1,4 +1,8 @@
 // A Proposer is only for a single epoch.
+// This is a proposer and a "learner".
+
+event eCommit : data;
+
 machine Proposer {
   var epoch: int;
   var replicas : set[Replica];
@@ -7,6 +11,7 @@ machine Proposer {
 
   var val: data;
   var largestEpochSeen: int;
+  var acceptedReplicas: set[Replica];
 
   // every proposer starts in its own unique epoch.
   start state Main {
@@ -33,6 +38,12 @@ machine Proposer {
         }
       }
     }
-  }
 
+    on eProposeReply do (reply:tProposeReply) {
+      acceptedReplicas += (reply.source);
+      if (2 * sizeof(acceptedReplicas) > sizeof(replicas)) {
+        send this, eCommit, val;
+      }
+    }
+  }
 }
