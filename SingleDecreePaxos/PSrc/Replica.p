@@ -2,13 +2,13 @@
 type tEnterNewEpochArgs = (source:Proposer, epoch: int);
 event eEnterNewEpoch : tEnterNewEpochArgs;
 
-type tEnterNewEpochReply = (epoch: int, newEpoch:int, val: data);
+type tEnterNewEpochReply = (source: Replica, epoch: int, newEpoch:int, val: data);
 event eEnterNewEpochReply : tEnterNewEpochReply;
 
 type tProposeArgs = (source:Proposer, epoch: int, val: data);
 event ePropose : tProposeArgs;
 
-type tProposeReply = (epoch: int);
+type tProposeReply = (source: Replica, epoch: int);
 event eProposeReply : tProposeReply;
 
 machine Replica {
@@ -22,7 +22,7 @@ machine Replica {
       var reply: tEnterNewEpochReply;
       if (req.epoch > epoch) {
         epoch = req.epoch;
-        reply = (epoch = acceptedEpoch, newEpoch = acceptedEpoch, val = val);
+        reply = (source = this, epoch = acceptedEpoch, newEpoch = acceptedEpoch, val = val);
         send req.source, eEnterNewEpochReply, reply;
       }
     }
@@ -32,6 +32,10 @@ machine Replica {
       if (epoch <= req.epoch) {
         epoch = req.epoch;
         val = req.val;
+        // NOTE: why couldn't I do:
+        // reply = (epoch = epoch);
+        // like with other named tuples?
+        reply.source = this;
         reply.epoch = epoch;
         send req.source, eProposeReply, reply;
       }
